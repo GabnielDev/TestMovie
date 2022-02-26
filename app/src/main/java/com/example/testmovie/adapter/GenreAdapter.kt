@@ -21,8 +21,8 @@ class GenreAdapter(private var listData: MutableList<GenresItem?>) :
     class GenreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = ItemGenreBinding.bind(itemView)
 
-        fun bind(data: GenresItem) {
-            binding.txtGenres.text = data.name
+        fun bind(data: GenresItem?) {
+            binding.txtGenres.text = data?.name
         }
     }
 
@@ -32,7 +32,7 @@ class GenreAdapter(private var listData: MutableList<GenresItem?>) :
     }
 
     override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
-        holder.bind(listData[position]!!)
+        holder.bind(listData[position])
     }
 
     override fun getItemCount(): Int = listData.size

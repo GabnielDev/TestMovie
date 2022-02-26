@@ -24,14 +24,14 @@ class ReviewAdapter(
     class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = ItemReviewBinding.bind(itemView)
 
-        fun bind(data: ReviewItem) {
+        fun bind(data: ReviewItem?) {
             with(binding) {
-                binding.imgReviewer.load(BASE_URL_POSTER + data.authorDetails?.avatarPath) {
+                binding.imgReviewer.load(BASE_URL_POSTER + data?.authorDetails?.avatarPath) {
                     error(R.drawable.ic_launcher_background)
                     placeholder(R.drawable.ic_launcher_foreground)
                 }
-                binding.txtNameReviewer.text = data.author
-                binding.txtContentReviewe.text = data.content
+                binding.txtNameReviewer.text = data?.author
+                binding.txtContentReviewe.text = data?.content
             }
         }
     }
@@ -42,7 +42,7 @@ class ReviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        holder.bind(listData[position]!!)
+        holder.bind(listData[position])
     }
 
     override fun getItemCount(): Int = listData.size

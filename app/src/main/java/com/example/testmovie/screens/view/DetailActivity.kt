@@ -1,4 +1,4 @@
-package com.example.testmovie.screens
+package com.example.testmovie.screens.view
 
 import android.content.Intent
 import android.net.Uri
@@ -33,7 +33,7 @@ class DetailActivity : AppCompatActivity() {
     private var isEmpty = true
     private var page = 1
     private var loading = false
-    private var data: MutableList<ReviewItem?> = ArrayList()
+    private var data: MutableList<ReviewItem?>? = ArrayList()
 
     companion object {
         const val ID = "id"
@@ -120,13 +120,16 @@ class DetailActivity : AppCompatActivity() {
         detailViewmodel.getReview(id, page).observe(this) {
             nextPage = !it.isNullOrEmpty()
             if (page == 0) {
-                data = it!!
-                isEmpty = it!!.isEmpty()
+                data = it
+                if (it != null) {
+                    isEmpty = it.isEmpty()
+                }
             } else {
-                data.addAll(it!!)
+                if (it != null) {
+                    data?.addAll(it)
+                }
             }
-            reviewAdapter.setData(data)
-            Log.e("reviewData", "$it")
+            data?.let { it1 -> reviewAdapter.setData(it1) }
         }
 
     }

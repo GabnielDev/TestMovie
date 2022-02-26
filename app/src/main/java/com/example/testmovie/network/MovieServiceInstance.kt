@@ -20,51 +20,37 @@ interface MovieServiceInstance {
 
     @GET(URL_NOWPLAYING_MOVIE)
     suspend fun getNowPlayingMovie(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int
     ): Response<ResponseMovie>
 
     @GET(URL_UPCOMING_MOVIE)
     suspend fun getUpComingMovie(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int
     ): Response<ResponseMovie>
 
     @GET(URL_TOPRATED_MOVIE)
     suspend fun getTopRatedMovie(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int
     ): Response<ResponseMovie>
 
     @GET(URL_POPULAR_MOVIE)
     suspend fun getPopularMovie(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int
     ): Response<ResponseMovie>
 
     @GET(URL_DETAIL_MOVIE)
     suspend fun getDetailMovie(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
+        @Path("movie_id") id: Int
     ): Response<DetailMovie>
 
     @GET(URL_TRAILER_MOVIE)
     suspend fun getTrailerMovie(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
+        @Path("movie_id") id: Int
     ): Response<MovieTrailer>
 
     @GET(URL_REVIEW_MOVIE)
     suspend fun getReviewMovie(
         @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int
     ): Response<ReviewMovie>
 }

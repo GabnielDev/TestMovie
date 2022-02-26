@@ -14,6 +14,11 @@ object Constants {
     const val URL_REVIEW_MOVIE = "movie/{movie_id}/reviews"
     const val URL_TRAILER_MOVIE = "movie/{movie_id}/videos"
 
+    const val URL_AIRINGTODAY_TV = "tv/airing_today"
+    const val URL_TOPRATED_TV = "tv/top_rated"
+    const val URL_ONTHEAIR_TV = "tv/on_the_air"
+    const val URL_POPULAR_TV = "tv/popular"
+
 
 
 }

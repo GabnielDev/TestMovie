@@ -1,12 +1,11 @@
-package com.example.testmovie.screens
+package com.example.testmovie.screens.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +13,7 @@ import com.example.testmovie.R
 import com.example.testmovie.adapter.MovieAdapter
 import com.example.testmovie.data.ResultsItem
 import com.example.testmovie.databinding.ActivityViewallBinding
+import com.example.testmovie.screens.view.DetailActivity
 import com.example.testmovie.viewmodel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +27,7 @@ class ViewallActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
     private lateinit var topratedAdapter: MovieAdapter
     private lateinit var popularAdapter: MovieAdapter
 
-    private var data: MutableList<ResultsItem?> = ArrayList()
+    private var data: MutableList<ResultsItem?>? = ArrayList()
 
     private var nextPage = true
     private var isEmpty = true
@@ -84,36 +84,40 @@ class ViewallActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
         when (kode) {
             1 -> {
                 movieViewModel.getNowPlaying(page).observe(this) {
-                    nextPage = !it.isNullOrEmpty()
+                    nextPage = !it?.results.isNullOrEmpty()
                     if (page == 0) {
-                        data = it!!
-                        isEmpty = it.isEmpty()
+                        data = it?.results
+                        isEmpty = it?.results?.isEmpty() ?: true
                     } else {
                         nowplayingAdapter = MovieAdapter(ArrayList(), this)
                         binding.rvViewAllMovie.apply {
                             layoutManager = GridLayoutManager(context, 2)
                             adapter = nowplayingAdapter
-                            data.addAll(it!!)
+                            it?.results?.let { it1 ->
+                                data?.addAll(it1)
+                            }
                         }
-                        nowplayingAdapter.setData(data)
+                        data?.let { data -> nowplayingAdapter.setData(data) }
                     }
                 }
             }
 
             2 -> {
                 movieViewModel.getUpComing(page).observe(this) {
-                    nextPage = !it.isNullOrEmpty()
+                    nextPage = !it?.results.isNullOrEmpty()
                     if (page == 0) {
-                        data = it!!
-                        isEmpty = it.isEmpty()
+                        data = it?.results
+                        isEmpty = it?.results?.isEmpty() ?: true
                     } else {
                         upcomingAdapter = MovieAdapter(ArrayList(), this)
                         binding.rvViewAllMovie.apply {
                             layoutManager = GridLayoutManager(context, 2)
                             adapter = upcomingAdapter
-                            data.addAll(it!!)
+                            it?.results?.let {
+                                    it1 -> data?.addAll(it1)
+                            }
                         }
-                        upcomingAdapter.setData(data)
+                        data?.let { data -> upcomingAdapter.setData(data) }
                     }
                 }
             }
@@ -121,36 +125,40 @@ class ViewallActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
 
             3 -> {
                 movieViewModel.getTopRated(page).observe(this) {
-                    nextPage = !it.isNullOrEmpty()
+                    nextPage = !it?.results.isNullOrEmpty()
                     if (page == 0) {
-                        data = it!!
-                        isEmpty = it.isEmpty()
+                        data = it?.results
+                        isEmpty = it?.results?.isEmpty() ?: true
                     } else {
                         topratedAdapter = MovieAdapter(ArrayList(), this)
                         binding.rvViewAllMovie.apply {
                             layoutManager = GridLayoutManager(context, 2)
                             adapter = topratedAdapter
-                            data.addAll(it!!)
+                            it?.results?.let {
+                                    it1 -> data?.addAll(it1)
+                            }
                         }
-                        topratedAdapter.setData(data)
+                        data?.let { data -> topratedAdapter.setData(data) }
                     }
                 }
             }
 
             4 -> {
                 movieViewModel.getPopular(page).observe(this) {
-                    nextPage = !it.isNullOrEmpty()
+                    nextPage = !it?.results.isNullOrEmpty()
                     if (page == 0) {
-                        data = it!!
-                        isEmpty = it.isEmpty()
+                        data = it?.results
+                        isEmpty = it?.results?.isEmpty() ?: true
                     } else {
                         popularAdapter = MovieAdapter(ArrayList(), this)
                         binding.rvViewAllMovie.apply {
                             layoutManager = GridLayoutManager(context, 2)
                             adapter = popularAdapter
-                            data.addAll(it!!)
+                            it?.results?.let {
+                                    it1 -> data?.addAll(it1)
+                            }
                         }
-                        popularAdapter.setData(data)
+                        data?.let { data -> popularAdapter.setData(data) }
                     }
                 }
             }

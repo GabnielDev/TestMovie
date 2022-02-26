@@ -21,6 +21,7 @@ class DetailViewModel @Inject constructor(val repository: Repository): ViewModel
     private val status = MutableLiveData<Int>()
     private val message = MutableLiveData<String>()
 
+
     fun getDetail(id: Int): LiveData<DetailMovie> {
         val detail = MutableLiveData<DetailMovie>()
         viewModelScope.launch {
@@ -28,7 +29,6 @@ class DetailViewModel @Inject constructor(val repository: Repository): ViewModel
                 try {
                     val data = it.body()
                     detail.value = data
-                    Log.e("detailCok", "$it")
                 } catch (t: Throwable) {
 
                 }

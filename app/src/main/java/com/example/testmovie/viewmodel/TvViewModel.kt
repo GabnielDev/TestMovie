@@ -4,36 +4,34 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testmovie.data.ResponseMovie
-import com.example.testmovie.data.ResultsItem
-import com.example.testmovie.repository.Repository
+import com.example.testmovie.data.ResponseTv
+import com.example.testmovie.data.ResultTv
+import com.example.testmovie.repository.TvRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(val repository: Repository) : ViewModel() {
+class TvViewModel @Inject constructor(private val repository: TvRepository) : ViewModel() {
 
     private val loading = MutableLiveData<Boolean>()
     private val status = MutableLiveData<Int>()
     private val message = MutableLiveData<String>()
 
-    val playing = MutableLiveData<ResponseMovie?>()
-    val upcoming = MutableLiveData<ResponseMovie?>()
-    val toprated = MutableLiveData<ResponseMovie?>()
-    val popular = MutableLiveData<ResponseMovie?>()
+    //    val airing = MutableLiveData<ArrayList<ResultTv?>?>()
+    val airing = MutableLiveData<ResponseTv?>()
+    val toprated = MutableLiveData<ResponseTv?>()
+    val ontheair = MutableLiveData<ResponseTv?>()
+    val popular = MutableLiveData<ResponseTv?>()
 
-
-
-    fun getNowPlaying(page: Int): LiveData<ResponseMovie?> {
+    fun getAiringToday(page: Int): LiveData<ResponseTv?> {
         loading.value = true
         viewModelScope.launch {
-            repository.getNowPlayingMovie(page).let {
+            repository.getAiringTodayTv(page).let {
                 try {
                     val data = it.body()
-                    playing.value = data
+                    airing.value = data
                     loading.value = false
                 } catch (t: Throwable) {
                     when (t) {
@@ -45,34 +43,13 @@ class MovieViewModel @Inject constructor(val repository: Repository) : ViewModel
                 loading.value = false
             }
         }
-        return playing
+        return airing
     }
 
-    fun getUpComing(page: Int): LiveData<ResponseMovie?> {
+    fun getTopRated(page: Int): LiveData<ResponseTv?> {
         loading.value = true
         viewModelScope.launch {
-            repository.getUpComingMovie(page).let {
-                try {
-                    val data = it.body()
-                    upcoming.value = data
-                    loading.value = false
-                } catch (t: Throwable) {
-                    when (t) {
-                        is Exception -> message.value = t.message.toString()
-                        is HttpException -> message.value = t.message().toString()
-                        else -> message.value = "Unknow Error"
-                    }
-                }
-                loading.value = false
-            }
-        }
-        return upcoming
-    }
-
-    fun getTopRated(page: Int): LiveData<ResponseMovie?> {
-        loading.value = true
-        viewModelScope.launch {
-            repository.getTopRatedMovie(page).let {
+            repository.getTopRatedTv(page).let {
                 try {
                     val data = it.body()
                     toprated.value = data
@@ -90,10 +67,31 @@ class MovieViewModel @Inject constructor(val repository: Repository) : ViewModel
         return toprated
     }
 
-    fun getPopular(page: Int): LiveData<ResponseMovie?> {
+    fun getOntheAir(page: Int): LiveData<ResponseTv?> {
         loading.value = true
         viewModelScope.launch {
-            repository.getPopularMovie(page).let {
+            repository.getOntheAirTv(page).let {
+                try {
+                    val data = it.body()
+                    ontheair.value = data
+                    loading.value = false
+                } catch (t: Throwable) {
+                    when (t) {
+                        is Exception -> message.value = t.message.toString()
+                        is HttpException -> message.value = t.message().toString()
+                        else -> message.value = "Unknow Error"
+                    }
+                }
+                loading.value = false
+            }
+        }
+        return ontheair
+    }
+
+    fun getPopular(page: Int): LiveData<ResponseTv?> {
+        loading.value = true
+        viewModelScope.launch {
+            repository.getPopularTv(page).let {
                 try {
                     val data = it.body()
                     popular.value = data
@@ -111,8 +109,10 @@ class MovieViewModel @Inject constructor(val repository: Repository) : ViewModel
         return popular
     }
 
+
     fun getLoading(): LiveData<Boolean> = loading
     fun getStatus(): LiveData<Int> = status
     fun getMessage(): LiveData<String> = message
+
 
 }

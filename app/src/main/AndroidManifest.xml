@@ -13,13 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestMovie">
         <activity
-            android:name=".screens.ViewallActivity"
+            android:name=".screens.view.ViewallActivity"
             android:exported="false" />
         <activity
-            android:name=".screens.DetailActivity"
+            android:name=".screens.view.DetailActivity"
             android:exported="false" />
         <activity
-            android:name=".screens.MainActivity"
+            android:name=".screens.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

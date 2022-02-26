@@ -1,25 +1,27 @@
-package com.example.testmovie.screens
+package com.example.testmovie.screens.fragment
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import androidx.activity.viewModels
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.testmovie.R
 import com.example.testmovie.adapter.MovieAdapter
 import com.example.testmovie.data.ResultsItem
-import com.example.testmovie.databinding.ActivityMainBinding
+import com.example.testmovie.databinding.FragmentMovieBinding
+import com.example.testmovie.screens.view.DetailActivity
+import com.example.testmovie.screens.view.ViewallActivity
 import com.example.testmovie.viewmodel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class MainActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
 
-    private lateinit var binding: ActivityMainBinding
+@AndroidEntryPoint
+class MovieFragment : Fragment(), MovieAdapter.OnItemClickCallback {
+
+    private var _binding: FragmentMovieBinding? = null
+    private val binding get() = _binding!!
 
     private val movieViewModel: MovieViewModel by viewModels()
 
@@ -27,58 +29,75 @@ class MainActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
     private lateinit var upcomingAdapter: MovieAdapter
     private lateinit var topratedAdapter: MovieAdapter
     private lateinit var popularAdapter: MovieAdapter
+
     private var page = 1
     private var loading = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentMovieBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         getLoading()
-        setupView()
         getData()
+        setupView()
         onClick()
 
+
+        return view
     }
 
     private fun getLoading() {
-        movieViewModel.getLoading().observe(this) {
+        movieViewModel.getLoading().observe(viewLifecycleOwner) {
             loading = it
-            if (loading) binding.progressCircular.visibility = VISIBLE
-            else binding.progressCircular.visibility = GONE
+            if (loading) binding.progressCircular.visibility = View.VISIBLE
+            else binding.progressCircular.visibility = View.GONE
         }
+
+        movieViewModel.getStatus().observe(viewLifecycleOwner) {
+            if (it >= 400) binding.lineNodata.visibility = View.GONE
+        }
+
+        movieViewModel.getMessage().observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty()) binding.lineNodata.visibility = View.VISIBLE
+            binding.rlPlaying.visibility = View.GONE
+            binding.rlPopular.visibility = View.GONE
+            binding.rlTopRated.visibility = View.GONE
+            binding.rlUpComing.visibility = View.GONE
+
+            if (it.isNullOrEmpty()) binding.lineNodata.visibility = View.GONE
+
+        }
+
     }
 
     private fun getData() {
-        movieViewModel.getNowPlaying(page).observe(this) {
-            if (it != null) {
-                nowplayingAdapter.setData(it)
+        movieViewModel.getNowPlaying(page).observe(viewLifecycleOwner) {
+            it?.results?.let { data ->
+                nowplayingAdapter.setData(data)
             }
-            Log.e("playingData", "$it")
         }
 
-        movieViewModel.getUpComing(page).observe(this) {
-            if (it != null) {
-                upcomingAdapter.setData(it)
+        movieViewModel.getUpComing(page).observe(viewLifecycleOwner) {
+            it?.results?.let { data ->
+                upcomingAdapter.setData(data)
             }
-            Log.e("upComingdata", "$it")
         }
 
-        movieViewModel.getTopRated(page).observe(this) {
-            if (it != null) {
-                topratedAdapter.setData(it)
+        movieViewModel.getTopRated(page).observe(viewLifecycleOwner) {
+            it?.results?.let { data ->
+                topratedAdapter.setData(data)
             }
-            Log.e("topratedData", "$it")
         }
 
-        movieViewModel.getPopular(page).observe(this) {
-            if (it != null) {
-                popularAdapter.setData(it)
+        movieViewModel.getPopular(page).observe(viewLifecycleOwner) {
+            it?.results?.let { data ->
+                popularAdapter.setData(data)
             }
-            Log.e("popularData", "$it")
         }
 
     }
@@ -114,39 +133,33 @@ class MainActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
 
     }
 
-    override fun onItemClick(data: ResultsItem?) {
-        startActivity(
-            Intent(this, DetailActivity::class.java)
-                .putExtra(DetailActivity.ID, data?.id)
-        )
-    }
-
     private fun onClick() {
+
         with(binding) {
             txtAllNowPlaying.setOnClickListener {
                 startActivity(
-                    Intent(applicationContext, ViewallActivity::class.java)
+                    Intent(context, ViewallActivity::class.java)
                         .putExtra(ViewallActivity.EXTRA, 1)
                 )
             }
 
             txtAllUpComing.setOnClickListener {
                 startActivity(
-                    Intent(applicationContext, ViewallActivity::class.java)
+                    Intent(context, ViewallActivity::class.java)
                         .putExtra(ViewallActivity.EXTRA, 2)
                 )
             }
 
             txtAllTopRated.setOnClickListener {
                 startActivity(
-                    Intent(applicationContext, ViewallActivity::class.java)
+                    Intent(context, ViewallActivity::class.java)
                         .putExtra(ViewallActivity.EXTRA, 3)
                 )
             }
 
             txtAllPopular.setOnClickListener {
                 startActivity(
-                    Intent(applicationContext, ViewallActivity::class.java)
+                    Intent(context, ViewallActivity::class.java)
                         .putExtra(ViewallActivity.EXTRA, 4)
                 )
             }
@@ -154,5 +167,11 @@ class MainActivity : AppCompatActivity(), MovieAdapter.OnItemClickCallback {
 
     }
 
+    override fun onItemClick(data: ResultsItem?) {
+        startActivity(
+            Intent(context, DetailActivity::class.java)
+                .putExtra(DetailActivity.ID, data?.id)
+        )
+    }
 
 }

@@ -7,27 +7,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.testmovie.R
-import com.example.testmovie.data.ResultsItem
+import com.example.testmovie.data.ResultTv
 import com.example.testmovie.databinding.ItemPosterBinding
 import com.example.testmovie.utils.Constants.BASE_URL_POSTER
 
-class MovieAdapter(
-    private var listData: MutableList<ResultsItem?>,
-    private var onItemClickCallback: OnItemClickCallback
-) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class TvAdapter(private var listData: MutableList<ResultTv?>): RecyclerView.Adapter<TvAdapter.TvViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(listData: MutableList<ResultsItem?>) {
+    fun setData(listData: MutableList<ResultTv?>) {
         this.listData = listData
         notifyDataSetChanged()
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TvViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = ItemPosterBinding.bind(itemView)
-
-        fun bind(data: ResultsItem?) {
+        fun bind(data: ResultTv?) {
             with(binding) {
-                binding.txtJudul.text = data?.title
+                binding.txtJudul.text = data?.name
                 binding.txtRating.text = data?.voteAverage.toString()
                 imgPoster.load(BASE_URL_POSTER + data?.posterPath) {
                     crossfade(true)
@@ -35,29 +31,19 @@ class MovieAdapter(
                     placeholder(android.R.color.darker_gray)
                     error(R.drawable.ic_launcher_background)
                 }
-
-                itemView.setOnClickListener {
-                    onItemClickCallback.onItemClick(data)
-                }
-
             }
         }
-
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.item_poster, parent, false)
-        return MovieViewHolder(view)
+        return TvViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TvViewHolder, position: Int) {
         holder.bind(listData[position])
     }
 
-    override fun getItemCount(): Int = listData.size
-
-    interface OnItemClickCallback {
-        fun onItemClick(data: ResultsItem?)
-    }
+    override fun getItemCount() : Int = listData.size
 }
